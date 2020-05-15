@@ -23,7 +23,7 @@ model="${1}"
 disk_name=disk-${model}.img
 
 mkdir -p ${scriptdir}/build && cd ${scriptdir}/build
-cmake -G "CodeBlocks - Unix Makefiles" -DBOARD="rpi0" -DTC_PATH="${tcpath}/" -DCMAKE_TOOLCHAIN_FILE=${scriptdir}/toolchain-arm-none-eabi-rpi.cmake ${scriptdir}
+cmake -G "CodeBlocks - Unix Makefiles" -DTUTORIAL="${tutorial}" -DTC_PATH="${tcpath}/" -DCMAKE_TOOLCHAIN_FILE=${scriptdir}/toolchain-arm-none-eabi-${model}.cmake ${scriptdir}
 
 if [ $? -ne 0 ]; then
     echo "Failed to configure!" >&2
@@ -36,5 +36,9 @@ if [ $? -ne 0 ]; then
     echo "Failed to build!" >&2
     exit 1
 fi
+
+# Generate a new card image
+${base}/card/make_card.sh ${model} ${tutorial} ${scriptdir}/build/kernel.${tutorial}.${model}.img
+
 
 exit 0
